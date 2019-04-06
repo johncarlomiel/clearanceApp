@@ -1,0 +1,97 @@
+<h2>Students</h2>
+
+<button class="ui blue button" (click)="isAddingStudent = true;">Add New Student</button>
+
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>Student Id</th>
+      <th>Name</th>
+      <th>Course</th>
+      <th>Year</th>
+      <th colspan="2">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let acadStudent of acadStudents | paginate: { itemsPerPage: 10, currentPage: studentPage }">
+      <td>{{acadStudent.id}}</td>
+      <td>{{acadStudent.name}}</td>
+      <td>{{acadStudent.course}}</td>
+      <td>{{acadStudent.year}}</td>
+      <td>
+        <button class="ui button green" (click)="viewPayment(acadStudent.ay_student_id)">View Payments</button>
+        <button class="ui button red" (click)="removeStudent(acadStudent.ay_student_id)">Delete</button>
+      </td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+<pagination-controls *ngIf="!isAddingStudent" style="float:right" (pageChange)="studentPage=$event">
+</pagination-controls>
+<sui-modal *ngIf="isAddingStudent" [isClosable]="false" (dismissed)="isAddingStudent = false;" #modal>
+  <div class="header">Students</div>
+  <div class="content">
+    <div class="ui form">
+      <div class="grouped fields">
+        <div class="field" *ngFor="let student of students | paginate: { itemsPerPage: 10, currentPage: p }">
+          <sui-checkbox [(ngModel)]="student.isChecked">
+            {{student.name}}
+          </sui-checkbox>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="actions">
+    <pagination-controls style="float:left" (pageChange)="p=$event">
+    </pagination-controls>
+    <button class="ui red button" (click)="isAddingStudent = false;">Cancel</button>
+    <button class="ui green button" (click)="addStudents();" autofocus>OK</button>
+  </div>
+</sui-modal>
+
+
+
+
+<sui-modal *ngIf="isViewingStudentEvents" [isClosable]="false" (dismissed)="isViewingStudentEvents = false;" #viewModal>
+  <div class="header">Payments</div>
+  <div class="content">
+    <table class="ui celled table">
+      <thead>
+        <tr>
+          <th>Event Name</th>
+          <th>Term</th>
+          <th>Full Amount</th>
+          <th>Balance</th>
+          <th>Paid</th>
+          <th colspan="2">Payment</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let event of selectedStudentEvents.events">
+          <td>{{event.name}}</td>
+          <td>{{event.term}}</td>
+          <td>{{event.amount}}</td>
+          <td>{{event.balance}}</td>
+          <td>{{event.paid}}</td>
+          <td>
+            <div class="ui input" style="margin-right:10px;">
+              <input type="number" placeholder="Enter the amount" #amt>
+            </div>
+            <button class="ui button green" (click)="submitPayment(event, amt.value);">
+              Submit Payment
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="actions">
+    <button class="ui red button" (click)="isViewingStudentEvents = false;">Cancel</button>
+    <button class="ui green button" (click)="addStudents();" autofocus>OK</button>
+  </div>
+</sui-modal>

@@ -1,0 +1,5 @@
+<div class="ui secondary pointing menu">
+  <a class="item" [ngClass]="{'active': page.isActive}" routerLink="{{page.linkTo}}" *ngFor="let page of pages">
+    {{page.name}}
+  </a>
+</div>

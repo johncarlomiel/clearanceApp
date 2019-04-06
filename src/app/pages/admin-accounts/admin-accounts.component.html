@@ -1,0 +1,104 @@
+<div class="ui top attached demo menu">
+  <a class="item" (click)="sidebar.toggle()">
+    <i class="sidebar icon"></i> Menu
+  </a>
+</div>
+<sui-sidebar-container class="ui bottom attached segment">
+  <sui-sidebar class="inverted vertical" #sidebar>
+    <app-admin-sidebar></app-admin-sidebar>
+  </sui-sidebar>
+  <sui-sidebar-sibling [isDimmedWhenVisible]="true">
+
+    <div class="ui container" style="padding:15px;">
+
+
+      <button class="ui button blue" style="float:right;margin-bottom:15px;" (click)="isAddingAccount = true;">Add New
+        Account</button>
+
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Type</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{user.username}}</td>
+            <td>{{user.pwd}}</td>
+            <td>{{user.type}}</td>
+            <td>
+              <button class="ui button green" (click)="selectedAccount = user; isUpdatingAccount = true;">
+                Update Account
+              </button>
+              <button class="ui button red" (click)="deleteUser(user.user_id);">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </sui-sidebar-sibling>
+</sui-sidebar-container>
+
+
+<sui-modal *ngIf="isAddingAccount" [isClosable]="false" (dismissed)="isAddingAccount = false;" #modal>
+  <div class="header">New Account</div>
+  <div class="content">
+    <form #f="ngForm" class="ui form" (ngSubmit)="addNewAccount(f)" novalidate>
+      <div class="field">
+        <label for="">Username</label>
+        <input type="text" name="username" ngModel required #username="ngModel">
+      </div>
+      <div class="field">
+        <label for="">Password</label>
+        <input type="text" name="pwd" ngModel required #pwd="ngModel">
+      </div>
+      <div class="ui segment">
+        <p><strong>Account type</strong></p>
+        <sui-select placeholder="Choose Type" name="type" ngModel required #type="ngModel">
+          <sui-select-option value="admin"></sui-select-option>
+          <sui-select-option value="member"></sui-select-option>
+        </sui-select>
+      </div>
+      <button class="ui red button" (click)="isAddingAccount = false;">Cancel</button>
+      <button class="ui green button" type="submit" autofocus>Submit</button>
+    </form>
+
+  </div>
+
+</sui-modal>
+
+
+
+<sui-modal *ngIf="isUpdatingAccount" [isClosable]="false" (dismissed)="isUpdatingAccount = false;" #modal>
+  <div class="header">Update Account</div>
+  <div class="content">
+    <div class="ui form" novalidate>
+      <div class="field">
+        <label for="">Username</label>
+        <input type="text" name="username" [(ngModel)]="selectedAccount.username">
+      </div>
+      <div class="field">
+        <label for="">Password</label>
+        <input type="text" name="pwd" [(ngModel)]="selectedAccount.pwd">
+      </div>
+      <div class="ui segment">
+        <p><strong>Account type</strong></p>
+        <sui-select placeholder="Choose Type" name="type" [(ngModel)]="selectedAccount.type">
+          <sui-select-option value="admin"></sui-select-option>
+          <sui-select-option value="member"></sui-select-option>
+        </sui-select>
+      </div>
+      <button class="ui red button" (click)="isUpdatingAccount = false;">Cancel</button>
+      <button class="ui green button" (click)="updateAccount();" autofocus>Submit</button>
+    </div>
+
+  </div>
+
+</sui-modal>

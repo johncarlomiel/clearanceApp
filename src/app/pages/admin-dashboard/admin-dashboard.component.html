@@ -1,0 +1,91 @@
+<div class="ui top attached demo menu">
+  <a class="item" (click)="sidebar.toggle()">
+    <i class="sidebar icon"></i> Menu
+  </a>
+</div>
+<sui-sidebar-container class="ui bottom attached segment">
+  <sui-sidebar class="inverted vertical" #sidebar>
+    <app-admin-sidebar></app-admin-sidebar>
+  </sui-sidebar>
+  <sui-sidebar-sibling [isDimmedWhenVisible]="true">
+    <div class="ui container">
+      <div class="ui success message" *ngIf="isNotif">
+        <i class="close icon"></i>
+        <div class="header">
+          New Academic Year is added
+        </div>
+        <p>You may now add students or events in that Academic Year</p>
+      </div>
+
+
+
+      <button style="margin-bottom:10px;" class="ui blue right floated button" (click)="isAYModalOpen = true;"
+        [ngClass]="{'loading': isLoading}">
+        Add New Academic Year
+      </button>
+      <table class="ui center aligned padded celled table">
+
+        <thead>
+          <tr>
+            <th>Academic Year</th>
+            <th colspan="4">Action Buttons</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ay of academicYears">
+            <td>
+              {{ay.date_from}} - {{ay.date_to}}
+            </td>
+            <td>
+              <button class="ui green button" routerLink="/acad-year/{{ay.id}}">
+                View
+              </button>
+              <button class="ui blue button">
+                Edit
+              </button>
+              <button class="ui red button">
+                Delete
+              </button>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </sui-sidebar-sibling>
+</sui-sidebar-container>
+
+
+
+
+
+<sui-modal *ngIf="isAYModalOpen" [isClosable]="true" (dismissed)="isAYModalOpen = false;" #modal>
+  <div class="header">New Academic Year</div>
+  <div class="content">
+    <div class="ui form">
+      <div class="two fields">
+        <div class="field">
+          <label>Date From</label>
+          <div class="ui left icon input">
+            <i class="calendar icon"></i>
+            <input suiDatepicker [(ngModel)]="date_from" [pickerMode]="'year'" [pickerFirstDayOfWeek]="'0'"
+              [pickerUseNativeOnMobile]="false" (ngModelChange)="onDateChange()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Date To</label>
+          <div class="ui left icon input">
+            <i class="calendar icon"></i>
+            <input suiDatepicker [(ngModel)]="date_to" [pickerMode]="'year'" [pickerFirstDayOfWeek]="'0'"
+              [pickerUseNativeOnMobile]="false" disabled>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="ui red button" (click)="isAYModalOpen = false;">Cancel</button>
+    <button class="ui green button" (click)="onSubmitNewAY()" autofocus>Submit</button>
+  </div>
+</sui-modal>

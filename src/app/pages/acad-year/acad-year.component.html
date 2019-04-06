@@ -1,0 +1,27 @@
+<h2 class="ui center aligned icon header">
+  <i class="calendar alternate outline icon"></i>
+  <div class="content" *ngIf="acadInfo">
+    Academic Year ({{acadInfo.date_from}} - {{acadInfo.date_to}})
+    <div class="sub header">Manage this academic year here</div>
+  </div>
+</h2>
+
+
+<div class="ui segment">
+  <div class="ui two column very relaxed grid">
+    <div class="column">
+      <app-acad-students [ay_id]="acadId">
+
+      </app-acad-students>
+    </div>
+    <div class="column">
+
+      <app-admin-events [ay_id]="acadId">
+
+      </app-admin-events>
+    </div>
+  </div>
+  <div class="ui vertical divider">
+
+  </div>
+</div>

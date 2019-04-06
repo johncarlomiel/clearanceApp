@@ -1,0 +1,136 @@
+<div class="ui top attached demo menu">
+  <a class="item" (click)="sidebar.toggle()">
+    <i class="sidebar icon"></i> Menu
+  </a>
+</div>
+
+<sui-sidebar-container class="ui bottom attached segment">
+  <sui-sidebar class="inverted vertical" #sidebar>
+    <app-admin-sidebar></app-admin-sidebar>
+  </sui-sidebar>
+  <sui-sidebar-sibling [isDimmedWhenVisible]="true">
+
+    <div *ngIf="message.isActive &&  message.componentType == 'notModal'"
+      class="ui message center aligned {{message.type}}">
+      <div class="header">
+        {{message.header}}
+      </div>
+      <p>{{message.body}}</p>
+    </div>
+
+    <h2>Students Page</h2>
+    <button class="ui blue button" (click)="isAddingModal = true;">Add New Student</button>
+    <table class="ui center aligned padded celled table">
+
+      <thead>
+        <tr>
+          <th>Student Id</th>
+          <th>Name</th>
+          <th>Course</th>
+          <th>Year</th>
+          <th colspan="4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of students | paginate: { itemsPerPage: 10, currentPage: p }">
+          <td>{{student.id}}</td>
+          <td>{{student.name}}</td>
+          <td>{{student.course}}</td>
+          <td>{{student.year}}</td>
+          <td>
+            <button class="ui violet button" (click)="selectedStudent = student; isUpdatingModal = true;"
+              [ngClass]="{'loading': isLoading}">Edit</button>
+            <button class="ui red button" [ngClass]="{'loading': isLoading}"
+              (click)="removeStudent(student.id)">Delete</button>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+    <pagination-controls style="float:right" (pageChange)="p = $event"></pagination-controls>
+
+
+
+  </sui-sidebar-sibling>
+</sui-sidebar-container>
+
+
+
+
+
+
+<sui-modal *ngIf="isUpdatingModal" [isClosable]="true" (dismissed)="isUpdatingModal = false;" #studentModal>
+
+  <h4 class="ui dividing header">Update Student</h4>
+  <div *ngIf="message.isActive && message.componentType == 'modal'" class="ui message center aligned {{message.type}}">
+    <div class="header">
+      {{message.header}}
+    </div>
+    <p>{{message.body}}</p>
+  </div>
+  <form style="padding:15px;" class="ui form">
+    <div class="content">
+
+      <div class="field">
+        <div class="field">
+          <label>Student Name:</label>
+          <input type="text" name="name" [(ngModel)]="selectedStudent.name">
+        </div>
+      </div>
+
+      <div class="two fields">
+        <div class="field">
+          <label for="">Course:</label>
+          <input type="text" name="course" [(ngModel)]="selectedStudent.course">
+        </div>
+        <div class="field">
+          <label for="">Year Level:</label>
+          <input type="text" name="year" [(ngModel)]="selectedStudent.year">
+        </div>
+      </div>
+    </div>
+    <button class="ui red button" type="button" (click)="isUpdatingModal = false;">Cancel</button>
+    <button style="float:right" type="button" class="ui green button" (click)="updateStudent(selectedStudent);"
+      autofocus>Update</button>
+  </form>
+</sui-modal>
+
+<sui-modal *ngIf="isAddingModal" [isClosable]="true" (dismissed)="isAddingModal = false;" #studentModal>
+
+  <h4 class="ui dividing header">New Student</h4>
+  <div *ngIf="message.isActive && message.componentType == 'modal'" class="ui message center aligned {{message.type}}">
+    <div class="header">
+      {{message.header}}
+    </div>
+    <p>{{message.body}}</p>
+  </div>
+  <form style="padding:15px;" class="ui form " #f="ngForm" (ngSubmit)="addNewStudent(f);" novalidate>
+    <div class="content">
+
+      <div class="field">
+        <div class="field">
+          <label>Student Name:</label>
+          <input type="text" name="name" ngModel required #name="ngModel">
+        </div>
+      </div>
+
+      <div class="three fields">
+        <div class="field">
+          <label for="">Student No:</label>
+          <input type="number" name="id" ngModel required #id="ngModel">
+        </div>
+        <div class="field">
+          <label for="">Course:</label>
+          <input type="text" name="course" ngModel required #course="ngModel">
+        </div>
+        <div class="field">
+          <label for="">Year Level:</label>
+          <input type="text" name="year" ngModel required #year="ngModel">
+        </div>
+      </div>
+    </div>
+    <button class="ui red button" (click)="isAddingModal = false;">Cancel</button>
+    <button style="float:right" type="submit" class="ui green button" autofocus>Submit</button>
+  </form>
+</sui-modal>

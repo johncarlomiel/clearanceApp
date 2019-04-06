@@ -1,0 +1,109 @@
+<div *ngIf="message.isActive &&  message.componentType == 'notModal'"
+  class="ui message center aligned {{message.type}}">
+  <div class="header">
+    {{message.header}}
+  </div>
+  <p>{{message.body}}</p>
+</div>
+
+<h2>Events</h2>
+
+<button class="ui blue button" (click)="isAddingEvent = true;">Add New Event</button>
+
+<table class="ui center aligned padded celled table">
+
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Term</th>
+      <th colspan="2">Action Buttons</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let event of events">
+      <td>{{event.name}}</td>
+      <td>{{event.amount}}</td>
+      <td>{{event.term}}</td>
+      <td>
+        <button class="ui blue button" (click)="selectedEvent = event; isUpdatingEvent = true;">
+          Edit
+        </button>
+        <button class="ui red button" (click)="deleteEvent(event.event_id)">
+          Delete
+        </button>
+      </td>
+
+    </tr>
+  </tbody>
+</table>
+
+
+<sui-modal *ngIf="isAddingEvent" [isClosable]="true" (dismissed)="isAddingEvent = false;" #eventModal>
+  <div class="header">New Event</div>
+  <form style="padding:15px;" #f="ngForm" class="ui form" (ngSubmit)="addEvent(f)" novalidate>
+    <div class="content">
+      <div class="field">
+        <label for="">Event Name:</label>
+        <input type="text" name="name" ngModel required #name="ngModel">
+      </div>
+
+      <div class="two fields">
+        <div class="field">
+          <label for="">Amount</label>
+          <input type="number" name="amount" ngModel required #amount="ngModel">
+        </div>
+
+        <div class="field">
+          <div class="ui segment">
+            <p><strong>Term:</strong></p>
+            <sui-select placeholder="Choose term" name="term" ngModel required #term="ngModel">
+              <sui-select-option value="First Semester"></sui-select-option>
+              <sui-select-option value="Second Semester"></sui-select-option>
+              <sui-select-option value="Summer"></sui-select-option>
+            </sui-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="ui red button" type="button" (click)="isAddingEvent = false;">Cancel</button>
+    <button style="float:right" type="submit" class="ui green button" autofocus>Submit</button>
+  </form>
+</sui-modal>
+
+
+
+
+
+
+<sui-modal *ngIf="isUpdatingEvent" [isClosable]="false" (dismissed)="isUpdatingEvent = false;" #eventModal>
+  <div class="header">New Event</div>
+  <form style="padding:15px;" class="ui form" novalidate>
+    <div class="content">
+      <div class="field">
+        <label for="">Event Name:</label>
+        <input type="text" name="name" [(ngModel)]="selectedEvent.name">
+      </div>
+
+      <div class="two fields">
+        <div class="field">
+          <label for="">Amount</label>
+          <input type="number" name="amount" [(ngModel)]="selectedEvent.amount">
+        </div>
+
+        <div class="field">
+          <div class="ui segment">
+            <p><strong>Term:</strong></p>
+            <sui-select placeholder="Choose term" name="term" [(ngModel)]="selectedEvent.term">
+              <sui-select-option value="First Semester"></sui-select-option>
+              <sui-select-option value="Second Semester"></sui-select-option>
+              <sui-select-option value="Summer"></sui-select-option>
+            </sui-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="ui red button" type="button" (click)="isUpdatingEvent = false;">Cancel</button>
+    <button style="float:right" type="button" class="ui green button" (click)="updateEvent();" autofocus>Update</button>
+  </form>
+</sui-modal>
