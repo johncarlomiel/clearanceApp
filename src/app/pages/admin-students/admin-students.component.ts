@@ -11,6 +11,7 @@ export class AdminStudentsComponent implements OnInit {
   isAddingModal = false;
   selectedStudent: Object;
   isUpdatingModal = false;
+  isBackroundLoading = false;
   message = {
     type: "positive",
     header: "default header",
@@ -30,7 +31,9 @@ export class AdminStudentsComponent implements OnInit {
 
 
   getStudents() {
+    this.isBackroundLoading = true;
     this.studentService.getStudents().subscribe((data) => {
+      this.isBackroundLoading = false;
       this.students = data;
       console.log(this.students);
     }, (err) => console.log(err));
@@ -39,7 +42,7 @@ export class AdminStudentsComponent implements OnInit {
   removeStudent(id) {
     this.isLoading = true;
     this.studentService.removeStudent(id).subscribe((responseData) => {
-      this.getStudents();
+      this.students = responseData;
       this.isLoading = false;
     }, err => console.log(err));
   }
@@ -48,7 +51,7 @@ export class AdminStudentsComponent implements OnInit {
     this.isUpdatingModal = false;
     console.log(student);
     this.studentService.updateStudent(student).subscribe((resData) => {
-      this.getStudents();
+      this.students = resData;
       this.isLoading = false;
       this.message.header = "Student Info Updated";
       this.message.body = "";
@@ -65,14 +68,16 @@ export class AdminStudentsComponent implements OnInit {
 
   addNewStudent(f) {
     if (f.valid) {
+      this.isLoading = true;
       this.message.header = "Student Added";
       this.message.body = `Student:${f.value.name} is now added`;
       this.message.type = "positive";
       this.isAddingModal = false;
       this.message.componentType = "notModal";
       this.studentService.addStudent(f.value).subscribe((responseData) => {
+        this.isLoading = false;
         this.message.isActive = true;
-        this.getStudents();
+        this.students = responseData;
         setTimeout(() => {
           this.message.isActive = false;
         }, 7000);

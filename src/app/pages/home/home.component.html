@@ -2,6 +2,9 @@
 
 
 <div class="ui container segment center aligned">
+  <div class="ui active dimmer" *ngIf="isAYLoading">
+    <div class="ui indeterminate text loader">Loading</div>
+  </div>
   <h2 class="ui icon header">
     <i class="calendar alternate outline icon"></i>
     <div class="content">
@@ -10,7 +13,7 @@
     </div>
   </h2>
   <br>
-  <sui-select placeholder="Choose academic year" (ngModelChange)="ayChange($event);" [(ngModel)]="selectedAY">
+  <sui-select placeholder="Choose academic year" (ngModelChange)="ayChange($event);" [(ngModel)]="selectVal">
     <sui-select-option (click)="selectedAY = acad_year;" value="{{acad_year.date_from}} - {{acad_year.date_to}}"
       *ngFor="let acad_year of acad_years">
     </sui-select-option>
@@ -21,24 +24,39 @@
 
 
 <div class="ui segment container" *ngIf="students">
-  <div class="ui list huge">
-    <div class="item" *ngFor="let student of students | paginate: { itemsPerPage: 6, currentPage: p }">
-      <div class="right floated content">
-        <div class="ui blue button" routerLink="/student/{{student.ay_student_id}}">View</div>
-      </div>
-      <i class="id badge icon"></i>
-      <div class="content">
-        <a class="header" routerLink="/student/{{student.ay_student_id}}">{{student.name}}</a>
-        <div class="description">
-          <p>{{student.id}}
-            <br>
-            {{student.year}}
-            <br>
-            {{student.course}}
-          </p>
+
+  <div style="text-align:right">
+    <div class="ui left icon input">
+      <input type="text" placeholder="Search student..." [(ngModel)]="keyword" (keyup.enter)="search(keyword);"
+        #keywordTem>
+      <i class="users icon"></i>
+    </div>
+  </div>
+  <div class="ui divider"></div>
+  <div class="ui segment">
+    <div class="ui active dimmer" *ngIf="isLoading">
+      <div class="ui indeterminate text loader">Loading</div>
+    </div>
+    <div class="ui list huge">
+      <div class="item" *ngFor="let student of students | paginate: { itemsPerPage: 6, currentPage: p }">
+        <div class="right floated content">
+          <div class="ui blue button" routerLink="/student/{{student.ay_student_id}}">View</div>
+        </div>
+        <i class="id badge icon"></i>
+        <div class="content">
+          <a class="header" routerLink="/student/{{student.ay_student_id}}">{{student.name}}</a>
+          <div class="description">
+            <p>{{student.id}}
+              <br>
+              {{student.year}}
+              <br>
+              {{student.course}}
+            </p>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 
   <pagination-controls *ngIf="students" style="float:right" (pageChange)="p = $event"></pagination-controls>

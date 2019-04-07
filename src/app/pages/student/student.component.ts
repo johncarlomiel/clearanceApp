@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AcadStudentsService } from 'src/app/services/acad-students.service';
 import { StudentService } from 'src/app/services/student.service';
 
@@ -13,18 +13,27 @@ export class StudentComponent implements OnInit {
   studentInfo: Object;
   studentEvents: Array<any>;
   p: number = 1;
+  isLoading = false;
   images = ["1.jpg", "2.png", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.png", "8.png", "9.png", "10.jpg"];
   luckyImage = this.randImages();
   constructor(
     private route: ActivatedRoute,
     private acadStudentService: AcadStudentsService,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     localStorage.setItem("lastVisitedId", this.studentId);
-    this.getStudentEvents();
-    this.getStudentInfo();
+    console.log(this.studentId)
+    if (this.studentId == "undefined" || this.studentId == null) {
+      this.router.navigate(["/home"]);
+
+    } else {
+      this.getStudentEvents();
+      this.getStudentInfo();
+    }
+
   }
   getStudentInfo() {
     this.studentService.getSingleStudent(this.studentId).subscribe((responseData) => {

@@ -1,11 +1,16 @@
-<div *ngIf="message.isActive &&  message.componentType == 'notModal'"
-  class="ui message center aligned {{message.type}}">
+<div class="ui success message" *ngIf="message.isShow">
   <div class="header">
-    {{message.header}}
+    {{message.message}}
   </div>
-  <p>{{message.body}}</p>
+  <p>List of events is also now updated</p>
 </div>
 
+
+
+
+<div class="ui active dimmer" *ngIf="isLoading">
+  <div class="ui text loader">Loading</div>
+</div>
 <h2>Events</h2>
 
 <button class="ui blue button" (click)="isAddingEvent = true;">Add New Event</button>
@@ -21,7 +26,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let event of events">
+    <tr *ngFor="let event of events | paginate: { itemsPerPage: 10, currentPage: eventPage, id:'event' }">
       <td>{{event.name}}</td>
       <td>{{event.amount}}</td>
       <td>{{event.term}}</td>
@@ -37,11 +42,18 @@
     </tr>
   </tbody>
 </table>
+<pagination-controls id="event" *ngIf="!isAddingEvent && !isUpdatingEvent" style="float:right"
+  (pageChange)="eventPage=$event">
+</pagination-controls>
 
 
-<sui-modal *ngIf="isAddingEvent" [isClosable]="true" (dismissed)="isAddingEvent = false;" #eventModal>
+<sui-modal *ngIf="isAddingEvent" [isClosable]="false" (dismissed)="isAddingEvent = false;" #eventModal>
   <div class="header">New Event</div>
-  <form style="padding:15px;" #f="ngForm" class="ui form" (ngSubmit)="addEvent(f)" novalidate>
+
+  <form style="padding:15px;" #f="ngForm" class="ui form segment" (ngSubmit)="addEvent(f)" novalidate>
+    <div class="ui active dimmer" *ngIf="isAddingLoading">
+      <div class="ui text loader">Loading</div>
+    </div>
     <div class="content">
       <div class="field">
         <label for="">Event Name:</label>
@@ -60,7 +72,7 @@
             <sui-select placeholder="Choose term" name="term" ngModel required #term="ngModel">
               <sui-select-option value="First Semester"></sui-select-option>
               <sui-select-option value="Second Semester"></sui-select-option>
-              <sui-select-option value="Summer"></sui-select-option>
+              <sui-select-option value="Mid Year"></sui-select-option>
             </sui-select>
           </div>
         </div>
@@ -77,8 +89,12 @@
 
 
 <sui-modal *ngIf="isUpdatingEvent" [isClosable]="false" (dismissed)="isUpdatingEvent = false;" #eventModal>
-  <div class="header">New Event</div>
-  <form style="padding:15px;" class="ui form" novalidate>
+  <div class="header">Update Event</div>
+
+  <form style="padding:15px;" class="ui form segment" novalidate>
+    <div class="ui active dimmer" *ngIf="isUpdatingLoading">
+      <div class="ui text loader">Loading</div>
+    </div>
     <div class="content">
       <div class="field">
         <label for="">Event Name:</label>

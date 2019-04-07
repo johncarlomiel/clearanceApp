@@ -39,8 +39,10 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   getAcademicYears() {
+    this.isLoading = true;
     this.adminService.getAY().subscribe((successData) => {
       this.academicYears = successData;
+      this.isLoading = false;
     }, (err) => console.log(err));
   }
 

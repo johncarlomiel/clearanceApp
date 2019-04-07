@@ -9,6 +9,7 @@ import { AdminLoginComponent } from './pages/admin-login/admin-login.component';
 import { AdminStudentsComponent } from './pages/admin-students/admin-students.component';
 import { AdminAccountsComponent } from "./pages/admin-accounts/admin-accounts.component";
 import { StudentComponent } from "./pages/student/student.component";
+import { AuthGuard } from './guards/auth.guard';
 const routes: Routes = [
   {
     path: 'admin-dashboard',
@@ -28,7 +29,7 @@ const routes: Routes = [
   },
   {
     path: 'student/:id',
-    component: StudentComponent
+    component: StudentComponent,
   },
   {
     path: 'admin-login',
@@ -43,7 +44,7 @@ const routes: Routes = [
     component: HomeComponent
   },
   {
-    path: '', redirectTo: 'home', pathMatch: "full"
+    path: '', redirectTo: '/home', pathMatch: "full"
   },
   { path: '**', redirectTo: 'home' },
 ];

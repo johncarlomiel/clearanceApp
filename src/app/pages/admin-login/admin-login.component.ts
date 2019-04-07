@@ -9,17 +9,20 @@ import { Router } from '@angular/router';
 })
 export class AdminLoginComponent implements OnInit {
   isError = false;
+  isLoading = false;
   constructor(private adminAuthService: AdminAuthService, private router: Router) { }
 
   ngOnInit() {
   }
 
   login(username, password) {
+    this.isLoading = true;
     if (username != "" && password != "") {
       this.adminAuthService.login(username, password).subscribe((responseData) => {
+        this.isLoading = false;
         if (responseData.isCredentialsTrue) {
           //Login success
-          this.router.navigate(["/admin-sidebar"]);
+          this.router.navigate(["/admin-dashboard"]);
 
 
         } else {

@@ -10,45 +10,50 @@
   </sui-sidebar>
   <sui-sidebar-sibling [isDimmedWhenVisible]="true">
 
-    <div *ngIf="message.isActive &&  message.componentType == 'notModal'"
-      class="ui message center aligned {{message.type}}">
-      <div class="header">
-        {{message.header}}
+    <div class="ui segment">
+      <div class="ui active dimmer" *ngIf="isBackroundLoading">
+        <div class="ui text loader">Loading</div>
       </div>
-      <p>{{message.body}}</p>
+      <div *ngIf="message.isActive &&  message.componentType == 'notModal'"
+        class="ui message center aligned {{message.type}}">
+        <div class="header">
+          {{message.header}}
+        </div>
+        <p>{{message.body}}</p>
+      </div>
+
+      <h2>Students Page</h2>
+      <button class="ui blue button" (click)="isAddingModal = true;">Add New Student</button>
+      <table class="ui center aligned padded celled table">
+
+        <thead>
+          <tr>
+            <th>Student Id</th>
+            <th>Name</th>
+            <th>Course</th>
+            <th>Year</th>
+            <th colspan="4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of students | paginate: { itemsPerPage: 10, currentPage: p }">
+            <td>{{student.id}}</td>
+            <td>{{student.name}}</td>
+            <td>{{student.course}}</td>
+            <td>{{student.year}}</td>
+            <td>
+              <button class="ui violet button" (click)="selectedStudent = student; isUpdatingModal = true;"
+                [ngClass]="{'loading': isLoading,'disabled': isLoading}">Edit</button>
+              <button class="ui red button" [ngClass]="{'loading': isLoading, 'disabled':isLoading}"
+                (click)="removeStudent(student.id)">Delete</button>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+      <pagination-controls style="float:right" (pageChange)="p = $event"></pagination-controls>
     </div>
-
-    <h2>Students Page</h2>
-    <button class="ui blue button" (click)="isAddingModal = true;">Add New Student</button>
-    <table class="ui center aligned padded celled table">
-
-      <thead>
-        <tr>
-          <th>Student Id</th>
-          <th>Name</th>
-          <th>Course</th>
-          <th>Year</th>
-          <th colspan="4">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let student of students | paginate: { itemsPerPage: 10, currentPage: p }">
-          <td>{{student.id}}</td>
-          <td>{{student.name}}</td>
-          <td>{{student.course}}</td>
-          <td>{{student.year}}</td>
-          <td>
-            <button class="ui violet button" (click)="selectedStudent = student; isUpdatingModal = true;"
-              [ngClass]="{'loading': isLoading}">Edit</button>
-            <button class="ui red button" [ngClass]="{'loading': isLoading}"
-              (click)="removeStudent(student.id)">Delete</button>
-          </td>
-        </tr>
-
-      </tbody>
-
-    </table>
-    <pagination-controls style="float:right" (pageChange)="p = $event"></pagination-controls>
 
 
 
@@ -60,7 +65,7 @@
 
 
 
-<sui-modal *ngIf="isUpdatingModal" [isClosable]="true" (dismissed)="isUpdatingModal = false;" #studentModal>
+<sui-modal *ngIf="isUpdatingModal" [isClosable]="false" (dismissed)="isUpdatingModal = false;" #studentModal>
 
   <h4 class="ui dividing header">Update Student</h4>
   <div *ngIf="message.isActive && message.componentType == 'modal'" class="ui message center aligned {{message.type}}">
@@ -96,7 +101,7 @@
   </form>
 </sui-modal>
 
-<sui-modal *ngIf="isAddingModal" [isClosable]="true" (dismissed)="isAddingModal = false;" #studentModal>
+<sui-modal *ngIf="isAddingModal" [isClosable]="false" (dismissed)="isAddingModal = false;" #studentModal>
 
   <h4 class="ui dividing header">New Student</h4>
   <div *ngIf="message.isActive && message.componentType == 'modal'" class="ui message center aligned {{message.type}}">

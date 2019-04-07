@@ -8,7 +8,11 @@
     <app-admin-sidebar></app-admin-sidebar>
   </sui-sidebar>
   <sui-sidebar-sibling [isDimmedWhenVisible]="true">
-    <div class="ui container">
+    <br>
+    <div class="ui segment container">
+      <div class="ui active dimmer" *ngIf="isLoading">
+        <div class="ui text loader">Loading</div>
+      </div>
       <div class="ui success message" *ngIf="isNotif">
         <i class="close icon"></i>
         <div class="header">

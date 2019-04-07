@@ -6,6 +6,9 @@
 
 
   <div class="ui segment grid">
+    <div class="ui active dimmer" *ngIf="!studentInfo && !studentEvents">
+      <div class="ui indeterminate text loader">Loading</div>
+    </div>
     <div class="five wide column center aligned">
       <div class="ui card ">
         <div class="image">

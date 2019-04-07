@@ -10,6 +10,9 @@
       </h2>
       <form class="ui large form">
         <div class="ui stacked segment">
+          <div class="ui active dimmer" *ngIf="isLoading">
+            <div class="ui text loader">Loading</div>
+          </div>
           <div class="field">
             <div class="ui left icon input">
               <i class="user icon"></i>

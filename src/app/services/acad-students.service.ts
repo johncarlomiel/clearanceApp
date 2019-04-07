@@ -8,7 +8,18 @@ import { Observable } from 'rxjs';
 export class AcadStudentsService {
 
   constructor(private http: HttpClient) { }
+  search(keyword, ay_id): Observable<any> {
+    const params = new HttpParams().set('keyword', keyword).set('ay_id', ay_id);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }),
+      params
+    };
+    return this.http.get(configs.server_ip + "/acad-students", httpOptions);
 
+  }
 
   addStudents(data): Observable<any> {
     let rqstData = {
@@ -37,7 +48,15 @@ export class AcadStudentsService {
     return this.http.get(configs.server_ip + "/acad-students/" + id);
   }
 
-  removeStudent(id): Observable<any> {
-    return this.http.delete(configs.server_ip + "/acad-students/" + id);
+  removeStudent(id, ay_id): Observable<any> {
+    const params = new HttpParams().set('ay_id', ay_id);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }),
+      params
+    };
+    return this.http.delete(configs.server_ip + "/acad-students/" + id, httpOptions);
   }
 }
