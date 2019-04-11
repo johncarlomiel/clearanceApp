@@ -23,7 +23,20 @@
       </div>
 
       <h2>Students Page</h2>
-      <button class="ui blue button" (click)="isAddingModal = true;">Add New Student</button>
+      <div class="ui form" style="float:left;">
+
+
+        <div class="field">
+          <label for="">Submit your worksheet here</label>
+          <input type="file" multiple="false" (change)="onFileChange($event);" placeholder="Search..." #excelFile>
+        </div>
+
+
+      </div>
+      <div style="float:right;">
+        <button class="ui red button" (click)="deleteAllStudents();">Delete All Students</button>
+        <button class="ui blue button" (click)="isAddingModal = true;">Add New Student</button>
+      </div>
       <table class="ui center aligned padded celled table">
 
         <thead>

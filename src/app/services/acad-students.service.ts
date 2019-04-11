@@ -59,4 +59,28 @@ export class AcadStudentsService {
     };
     return this.http.delete(configs.server_ip + "/acad-students/" + id, httpOptions);
   }
+
+  addStudentsEvents(std, events): Observable<any> {
+    console.log(events)
+    console.log(std)
+    let container = [];
+    std.forEach((firstElement) => {
+      events.forEach((secondElement) => {
+        container.push({
+          ay_id: secondElement.ay_id,
+          std_id: firstElement.ay_student_id,
+          event_id: secondElement.event_id,
+          paid: 0,
+          balance: secondElement.amount
+        });
+
+      });
+    });
+    let data = {
+      container
+    }
+
+    return this.http.post(configs.server_ip + "/acad-students/events", data);
+
+  }
 }

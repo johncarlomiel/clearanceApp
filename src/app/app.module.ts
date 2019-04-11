@@ -18,6 +18,9 @@ import { AdminAccountsComponent } from './pages/admin-accounts/admin-accounts.co
 import { StudentComponent } from './pages/student/student.component';
 import { MenuComponent } from './pages/menu/menu.component';
 
+import { httpInterceptorProviders } from "./http-interceptors/index";
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,7 +44,7 @@ import { MenuComponent } from './pages/menu/menu.component';
     HttpClientModule,
     NgxPaginationModule
   ],
-  providers: [],
+  providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

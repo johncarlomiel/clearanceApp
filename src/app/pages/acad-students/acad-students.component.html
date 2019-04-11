@@ -88,8 +88,18 @@
 
 
 <sui-modal *ngIf="isViewingStudentEvents" [isClosable]="false" (dismissed)="isViewingStudentEvents = false;" #viewModal>
+  <div class="ui success message" *ngIf="paymentSuccessMsg">
+    <div class="header">
+      Payment Submitted
+    </div>
+    <p>List of events is updated</p>
+  </div>
   <div class="header">Payments</div>
-  <div class="content">
+  <div class="content segment">
+    <div class="ui active dimmer" *ngIf="isViewingLoading">
+      <div class="ui text loader">Loading</div>
+    </div>
+
     <table class="ui celled table">
       <thead>
         <tr>

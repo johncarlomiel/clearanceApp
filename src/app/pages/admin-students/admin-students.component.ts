@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
 import { StudentService } from 'src/app/services/student.service';
-
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-admin-students',
   templateUrl: './admin-students.component.html',
@@ -12,6 +12,7 @@ export class AdminStudentsComponent implements OnInit {
   selectedStudent: Object;
   isUpdatingModal = false;
   isBackroundLoading = false;
+  @ViewChild('excelFile') excelFile: ElementRef;
   message = {
     type: "positive",
     header: "default header",
@@ -21,10 +22,66 @@ export class AdminStudentsComponent implements OnInit {
   }
   p: number = 1;
   isLoading = false;
+  data: any;
   constructor(private studentService: StudentService) { }
 
   ngOnInit() {
     this.getStudents();
+    console.log(XLSX)
+  }
+
+  onFileChange(evt) {
+    console.log(evt);
+    /* wire up file reader */
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    const reader: FileReader = new FileReader();
+    reader.onload = (e: any) => {
+      /* read workbook */
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+
+      /* grab first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+      /* save data */
+      this.data = (XLSX.utils.sheet_to_json(ws, { header: 0 }));
+      console.log(this.data);
+      if (!!this.data) {
+        //Check if the format is correct
+        let headers = ["id", "name", "course", "year"];
+        let header = Object.keys(this.data[0]);
+        console.log(header);
+        if (JSON.stringify(headers) === JSON.stringify(header)) {
+          this.studentService.addStudents({ data: this.data }).subscribe((responseData) => {
+            this.students = responseData;
+            alert("Inserted students");
+
+          }, (err) => {
+            alert("This error might occur when there is a duplication of id between the database and the worksheet please delete the whole table and submit it again or check the id's of every student")
+          });
+
+        } else {
+          alert("Incorrect headers of your worksheet file")
+        }
+
+      } else {
+        alert("Submit a worksheet first");
+
+      }
+
+    };
+
+    reader.readAsBinaryString(target.files[0]);
+
+    // alert("Worksheet file parsed you can now use the button to check for errors and submit");
+    this.excelFile.nativeElement.value = "";
+
+  }
+
+  submitWorksheet() {
+
   }
 
 
@@ -45,6 +102,13 @@ export class AdminStudentsComponent implements OnInit {
       this.students = responseData;
       this.isLoading = false;
     }, err => console.log(err));
+  }
+  deleteAllStudents() {
+    this.studentService.deleteAllStudents().subscribe((responseData) => {
+      alert("All Students are now deleted");
+      this.students = responseData;
+
+    }, (err) => console.log(err));
   }
   updateStudent(student) {
     this.isLoading = true;

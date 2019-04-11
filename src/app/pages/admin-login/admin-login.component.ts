@@ -20,17 +20,9 @@ export class AdminLoginComponent implements OnInit {
     if (username != "" && password != "") {
       this.adminAuthService.login(username, password).subscribe((responseData) => {
         this.isLoading = false;
-        if (responseData.isCredentialsTrue) {
-          //Login success
-          this.router.navigate(["/admin-dashboard"]);
+        this.router.navigate(["/admin-dashboard"]);
+        localStorage.setItem("token", "Bearer " + responseData.jwt);
 
-
-        } else {
-          //Login Failed
-          alert("Incorrect username or password");
-
-
-        }
       }, (err) => console.log(err));
     } else {
       alert("Please fill all fields");

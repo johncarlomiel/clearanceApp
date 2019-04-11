@@ -1,27 +1,83 @@
-<h2 class="ui center aligned icon header">
-  <i class="calendar alternate outline icon"></i>
-  <div class="content" *ngIf="acadInfo">
-    Academic Year ({{acadInfo.date_from}} - {{acadInfo.date_to}})
-    <div class="sub header">Manage this academic year here</div>
-  </div>
-</h2>
-
-
-<div class="ui segment">
-  <div class="ui two column very relaxed grid">
-    <div class="column">
-      <app-acad-students [ay_id]="acadId">
-
-      </app-acad-students>
+<div *ngIf="!isPrinting">
+  <h2 class="ui center aligned icon header">
+    <i class="calendar alternate outline icon"></i>
+    <div class="content" *ngIf="acadInfo">
+      Academic Year ({{acadInfo.date_from}} - {{acadInfo.date_to}})
+      <div class="sub header">Manage this academic year here</div>
     </div>
-    <div class="column">
+  </h2>
+  <div class="ui segments">
+    <div class="ui segment">
+      <p><strong>Generate report by choosing a students course</strong></p>
+      <sui-select placeholder="Choose a course" [(ngModel)]="selectedCourse"
+        (ngModelChange)="generateReport(selectedCourse);">
+        <sui-select-option value="ACT"></sui-select-option>
+        <sui-select-option value="BSCS"></sui-select-option>
+        <sui-select-option value="BSIT"></sui-select-option>
+      </sui-select>
+      <!-- <button class="ui blue button" (click)="generateReport();">Generate Report</button> -->
+    </div>
+    <div class="ui segment">
+      <div class="ui two column very relaxed grid">
+        <div class="column">
+          <app-acad-students [ay_id]="acadId">
 
-      <app-admin-events [ay_id]="acadId">
+          </app-acad-students>
+        </div>
+        <div class="column">
 
-      </app-admin-events>
+          <app-admin-events [ay_id]="acadId">
+
+          </app-admin-events>
+        </div>
+      </div>
+      <div class="ui vertical divider">
+
+      </div>
     </div>
   </div>
-  <div class="ui vertical divider">
 
+</div>
+
+
+<div class="newPrint" *ngIf="isPrinting">
+  <div class="head">
+    <div style="margin-bottom:10px;padding-right:20px;padding-left:20px;">
+      <div id="logo_header" class="ui">
+        <img src="assets/images/gclogoprint.png" class="ui mini left floated image" alt="">
+        <img src="assets/icons/logo_ccs.png" class="ui mini right floated image" alt="">
+      </div>
+      <h4 class="center" style="font-weight:bolder">GORDON COLLEGE</h4>
+      <h4 class="center" style="font-weight:bolder">GC College Of Computer Studies</h4>
+      <p class="center" style="font-weight:bold">Tapinac Oval Sports Complex, East Tapinac, Olongapo City</p>
+
+    </div>
+  </div>
+
+  <div class="body" style="padding:10px;">
+    <h3 class="center">Academic Year ({{acadInfo.date_from}} - {{acadInfo.date_to}}) Events Status Report</h3>
+    <table class="ui celled table">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Course</th>
+          <th>Year</th>
+          <th *ngFor="let header of report_header">{{header.name}} <br> Total: ₱{{header.amount}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of stds_with_events">
+          <td>{{student.id}}</td>
+          <td>{{student.name}}</td>
+          <td>{{student.course}}</td>
+          <td>{{student.year}}</td>
+          <td *ngFor="let event of student.events"
+            [ngClass]="{'negative': event.balance == event.amount, 'positive': event.paid == event.amount}">
+            Balance: ₱{{event.balance}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

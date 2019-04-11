@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { StudentService } from 'src/app/services/student.service';
 import { AcadStudentsService } from 'src/app/services/acad-students.service';
+import { EventService } from 'src/app/services/event.service';
 
 @Component({
   selector: 'app-acad-students',
@@ -20,11 +21,15 @@ export class AcadStudentsComponent implements OnInit {
   selectedStudentEvents: Object;
   isViewingStudentEvents = false;
   deletedStudentSuccess = false;
+  isViewingLoading: boolean = false;
+  paymentSuccessMsg = false;
   isAcadStudentsEmpty = true;
+
   emptyMessage: string;
   constructor(
     private studentService: StudentService,
     private acadStudentService: AcadStudentsService,
+    private eventService: EventService
 
   ) { }
 
@@ -36,19 +41,28 @@ export class AcadStudentsComponent implements OnInit {
     if (amount > studentEventInfo.balance) {
       alert("You exceeded the event full amount");
     } else {
+      this.isViewingLoading = true;
       this.acadStudentService.updatePayment({ studentEventInfo, amount }).subscribe((responseData) => {
+        this.isViewingLoading = false;
         this.selectedStudentEvents = {
           std_id: responseData[0].std_id,
           events: responseData
         };
+        this.paymentSuccessMsg = true;
+        setTimeout(() => {
+          this.paymentSuccessMsg = false;
+        }, 7000);
 
       }, (err) => console.log(err));
     }
   }
 
   viewPayment(std_id) {
+    this.isLoading = true;
     this.acadStudentService.getStudent(std_id).subscribe((responseData) => {
+      this.isLoading = false;
       this.selectedStudentEvents = {
+
         std_id: std_id,
         events: responseData
       };
@@ -94,7 +108,9 @@ export class AcadStudentsComponent implements OnInit {
         this.students[index]["isChecked"] = false;
       });
 
-    }, (err) => console.log(err));
+    }, (err) => {
+      this.isAddingLoading = false;
+    });
   }
 
   removeStudent(ay_student_id) {
@@ -103,6 +119,7 @@ export class AcadStudentsComponent implements OnInit {
       this.acadStudents = responseData;
       this.isLoading = false;
       this.deletedStudentSuccess = true;
+      this.getStudents();
 
       this.checkAcadStudentsStatus();
       setTimeout(() => {
@@ -125,7 +142,7 @@ export class AcadStudentsComponent implements OnInit {
       this.students[index].isChecked = !element.isChecked;
     });
   }
-  
+
 
   addStudents() {
     this.isAddingLoading = true;
@@ -138,7 +155,8 @@ export class AcadStudentsComponent implements OnInit {
     this.acadStudentService.addStudents(addingStudents).subscribe((responseData) => {
       this.isAddingLoading = false;
       console.log(responseData);
-      this.acadStudents = responseData;
+      this.acadStudents = responseData.acad_students;
+      this.addEvents(responseData.noEntryOnEventStds);
       this.isAddingStudent = false;
       this.getStudents();
       this.addStudentSuccess = true;
@@ -148,6 +166,15 @@ export class AcadStudentsComponent implements OnInit {
         this.addStudentSuccess = false;
       }, 7000);
 
+    }, (err) => console.log(err));
+  }
+
+  addEvents(students) {
+    this.eventService.getEvents(this.ay_id).subscribe((responseData) => {
+      this.acadStudentService.addStudentsEvents(students, responseData).subscribe((responseData) => {
+        console.log(responseData);
+
+      }, (err) => console.log(err));
     }, (err) => console.log(err));
   }
 

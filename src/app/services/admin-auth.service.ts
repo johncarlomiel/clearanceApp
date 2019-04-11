@@ -10,8 +10,18 @@ export class AdminAuthService {
   constructor(private http: HttpClient) { }
 
   getSession(): Observable<any> {
-    return this.http.get(configs.server_ip + "/session");
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': localStorage.getItem("token"),
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      })
+    };
+    return this.http.get(configs.server_ip + "/session", httpOptions);
 
+  }
+  getAuthorizationToken() {
+    return localStorage.getItem("token");
   }
 
   deleteUser(id): Observable<any> {

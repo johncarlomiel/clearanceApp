@@ -30,6 +30,8 @@ export class AdminEventsComponent implements OnInit {
     this.getEvents();
   }
 
+
+
   deleteEvent(id) {
     this.isLoading = true;
 

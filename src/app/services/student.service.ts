@@ -14,16 +14,15 @@ export class StudentService {
     return this.http.get<[]>(configs.server_ip + "/student");
   }
 
+  addStudents(students): Observable<any> {
+    return this.http.post(configs.server_ip + "/student/cluster", students);
+  }
+
   getStudentsNotInAY(excludedStudents): Observable<any> {
-    const params = new HttpParams().set('excludedStudents', JSON.stringify(excludedStudents));
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }),
-      params
-    };
-    return this.http.get<[]>(configs.server_ip + "/student", httpOptions);
+    let data = {
+      excludedStudents
+    }
+    return this.http.post<[]>(configs.server_ip + "/student/excluded", data);
   }
 
   removeStudent(id): Observable<any> {
@@ -32,6 +31,11 @@ export class StudentService {
 
   addStudent(data): Observable<any> {
     return this.http.post(configs.server_ip + "/student", data);
+  }
+
+
+  deleteAllStudents(): Observable<any> {
+    return this.http.delete(configs.server_ip + "/student/truncate/0");
   }
 
   getSingleStudent(id): Observable<any> {

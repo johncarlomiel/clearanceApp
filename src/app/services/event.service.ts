@@ -17,6 +17,18 @@ export class EventService {
     return this.http.get(configs.server_ip + "/event/" + id);
   }
 
+  generateReport(ay_id, course): Observable<any> {
+    const params = new HttpParams().set('course', course);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }),
+      params
+    };
+    return this.http.get(configs.server_ip + "/event/report/" + ay_id, httpOptions);
+  }
+
   deleteEvent(id, ay_id): Observable<any> {
     const params = new HttpParams().set('ay_id', ay_id);
     const httpOptions = {
@@ -32,4 +44,6 @@ export class EventService {
   updateEvent(data): Observable<any> {
     return this.http.patch(configs.server_ip + "/event/" + data.event_id, data);
   }
+
+
 }
